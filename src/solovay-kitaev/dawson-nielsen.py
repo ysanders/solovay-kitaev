@@ -4,7 +4,7 @@
 from numpy import prod
 
 def group_commutator(V, W):
-    return prod(prod(V, W), prod(V.conj().T, W.conj().T)
+    return prod(prod(V, W), prod(V.conj().T, W.conj().T))
 
 def Basic_Approximation(U):
     pass
