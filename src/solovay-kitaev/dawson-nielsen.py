@@ -3,6 +3,9 @@
 
 from numpy import prod
 
+def group_commutator(V, W):
+    return prod(prod(V, W), prod(V.conj().T, W.conj().T)
+
 def Basic_Approximation(U):
     pass
 
@@ -17,8 +20,4 @@ def Solovay_Kitaev(U, depth):
         V, W = GC_Decompose(prod(U, prev_U.conj().T))
         prev_V = Solovay_Kitaev(V, depth-1)
         prev_W = Solovay_Kitaev(W, depth-1)
-        return prod(prod(prod(prev_V, prev_W),
-                         prod(prev_V.conj().T, prev_W.conj().T)),
-                    prev_U)
-
-
+        return prod(group_commutator(prev_V, prev_W),  prev_U)
