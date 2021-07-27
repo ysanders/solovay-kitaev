@@ -16,7 +16,7 @@ def basic_approximation_generator(
           
         # Convert sequence to set of gates
         integer_representation = i
-        current_sequence = []
+        current_combinations = []
     
         # Perform a basis change to the number of gates
         current_power = 1
@@ -39,6 +39,6 @@ def basic_approximation_generator(
         base_approximation = eye(matrix_rank)
     
         for gate in current_combination:
-            base_approximation @= gate
+            base_approximation = gate @ base_approximation
 
         yield base_approximation, current_combination
