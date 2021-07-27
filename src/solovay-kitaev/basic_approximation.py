@@ -3,7 +3,7 @@ from numpy import array, eye
 def basic_approximation_generator(
         unitary : array,
         *gates, 
-        depth = 3 : int):
+        depth = 3):
    
     # Dimension of operator
     # Currently probably 2; need to add combinations to single qubit gates
