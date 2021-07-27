@@ -7,16 +7,16 @@ from numpy import array
 def group_commutator(V, W):
     return prod(prod(V, W), prod(V.conj().T, W.conj().T))
 
-def Basic_Approximation(U):
+def basic_approximation(U):
     pass
 
 def GC_Decompose(U):
     pass
 
-def Solovay_Kitaev(
+def solovay_kitaev(
         unitary: array,
         depth: int,
-        gates = None : list
+        gates = None : list # TODO import gates and include appropriate defaults, expand to *args
         ) -> array, list:
     '''
         solovay_kitaev
