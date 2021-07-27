@@ -1,7 +1,6 @@
 from numpy import array, eye
 
 def basic_approximation_generator(
-        unitary : array,
         *gates, 
         depth = 3):
    
