@@ -1,7 +1,7 @@
 import numpy as np 
 from scipy.optimize import root_scalar
 from scipy.linalg import schur
-from solovay_kitaev.gates.paulis import pauli_x, pauli_y, pauli_z
+from solovay_kitaev.gates.paulis import *
 
 def dag(matrix : np.ndarray):
     '''
