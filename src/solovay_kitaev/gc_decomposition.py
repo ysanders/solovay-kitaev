@@ -55,7 +55,7 @@ def gc_decompose(unitary, determinant_error=1e-6):
     left_transform = np.cos(output_phase / 2) * identity - 1j * np.sin(output_phase / 2) * pauli_x
     right_transform = np.cos(output_phase / 2) * identity - 1j * np.sin(output_phase / 2) * pauli_y
 
-    group_commutator = left_transform @ dag(right_transform) @ left_transform. @ dag(right_transform)
+    group_commutator = left_transform @ right_transform @ dag(left_transform) @ dag(right_transform)
 
     _, schur_unitary = schur(unitary)
     _, schur_group_commutator = schur(group_commutator)
