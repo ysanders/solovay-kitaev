@@ -8,6 +8,14 @@ class BaseCaseQuery():
     '''
 
     def __init__(self, *gates : list, depth=3, unique=True, norm_bound=1e-5):
+        '''
+            __init__
+            Initialiser for the BaseCaseQuery
+            :: *gates : list :: List of gate as the basis for the query
+            :: depth         :: Depth of the query
+            :: unique        :: Are the gates unique, attempts to discard approximately identical constructions, eg XX and ZZ
+            :: norm_bound    :: Norm bound distance between discarded constructions
+        '''
         self.depth = depth
         self.gates = gates
         self.norm_bound = norm_bound
