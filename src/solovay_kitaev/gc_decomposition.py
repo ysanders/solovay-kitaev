@@ -2,23 +2,14 @@ import numpy as np
 from scipy.optimize import root_scalar
 from scipy.linalg import schur
 
+import numpy as np
+from scipy.optimize import root_scalar
+from scipy.linalg import schur
+
 I   = np.identity(2)
 X   = np.array([[0, 1], [1, 0]])
 Y   = np.array([[0, -1j], [1j, 0]])
 Z   = np.array([[1, 0], [0, -1]])
-S   = np.array([[1, 0], [0, 1j]])
-Sdg = np.array([[1, 0], [0, -1j]])
-T   = np.array([[1, 0], [0, (1+1j) / np.sqrt(2)]])
-Tdg = np.array([[1, 0], [0, (1+1j) / np.sqrt(2)]])
-
-def V(phi):
-    return np.cos(phi/2) * I - 1j * np.sin(phi/2) * X
-
-def W(phi):
-    return np.cos(phi/2) * I - 1j * np.sin(phi/2) * Y
-
-def group_commutator(V, W):
-    return V @ W @ V.conj().T @ W.conj().T
 
 def theta(phi):
     # [DN05, Eq. (10)]
@@ -35,3 +26,17 @@ def phi(theta_arg):
         return theta(phi_arg) - theta_arg
     sol = root_scalar(fn, bracket=[0, np.pi/2])
     return sol.root
+
+def GC_decompose(U):
+    assert np.linalg.det(U) == 1, "GC_decompose requires an input with determinant 1."
+    vals, _ = np.linalg.eig(U)
+    cos_theta_on_two = np.real(vals[0])
+    phi_value = phi(2 * np.arccos(cos_theta_on_two))
+    V = np.cos(phi_value / 2) * I - 1j * np.sin(phi_value / 2) * X
+    W = np.cos(phi_value / 2) * I - 1j * np.sin(phi_value / 2) * Y
+    gc = V @ W @ V.conj().T @ W.conj().T # group commutator
+    assert np.trace(U) == np.trace(gc), "Either serious user error or serious Yuval error."
+    _, S_U = schur(U)
+    _, S_gc = schur(gc)
+    S = S_gc.conj().T @ S_U
+    return S @ V @ S.conj().T, S @ W @ S.conj().T
