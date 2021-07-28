@@ -59,7 +59,7 @@ def gc_decompose(unitary, determinant_error=1e-6):
 
     _, schur_unitary = schur(unitary)
     _, schur_group_commutator = schur(group_commutator)
-    similary_transform = schur_group_commutator.conj().T @ schur_unitary
+    similary_transform = dag(schur_group_commutator) @ schur_unitary
 
     left_transform = similary_transform @ left_transform @ dag(similary_transform)
     right_transform =  similary_transform @ right_transform @ dag(similary_transform)
