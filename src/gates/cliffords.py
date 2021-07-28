@@ -17,3 +17,7 @@ t_gate = np.array([
     [1, 0],
     [0, inv_sqrt_2 + inv_sqrt_2 * 1j]
     ])
+
+clifford_generators = [hadamard, phase, t_gate]
+
+

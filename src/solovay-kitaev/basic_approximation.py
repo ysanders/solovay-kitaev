@@ -11,11 +11,12 @@ def basic_approximation_generator(
     matrix_rank = gates[0].shape[0]
 
     # Space of all sequences
-    for i in range(len(gates) ** depth):
+    base = len(gates)
+    for i in range(base ** depth):
           
         # Convert sequence to set of gates
         integer_representation = i
-        current_combinations = []
+        current_combination = []
     
         # Perform a basis change to the number of gates
         current_power = 1
