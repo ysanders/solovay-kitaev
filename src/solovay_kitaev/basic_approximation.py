@@ -1,5 +1,33 @@
 from numpy import array, eye
 
+class BaseCaseQuery():
+
+    def __init__(self, *gates : list, depth=3):
+        self.depth = depth
+        self.generate_query_structure()
+        self.gates = gates
+
+
+    def generate_query_structure(self):
+        
+
+        for approx, construction in basic_approximation_generator(*self.gates, depth=depth)
+
+
+
+    def __call__(self, unitary : array:) -> tuple:
+        self.query(unitary)
+
+    def query(self, unitary : array) -> tuple:
+    '''
+        query
+        Performs a query on the base case structure
+        :: unitary :: Unitary to find the approximation of
+        Returns a tuple of the approximate gate along with the gates required to construct it.
+    '''
+        
+
+
 def basic_approximation_generator(
         *gates, 
         depth = 3):
@@ -42,3 +70,6 @@ def basic_approximation_generator(
             base_approximation = gate @ base_approximation
 
         yield base_approximation, current_combination
+
+
+
