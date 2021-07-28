@@ -1,5 +1,5 @@
 import unittest
-from solovay_kitaev.solovay_kitaev.basic_approximation import basic_approximation_generator
+from solovay_kitaev.basic_approximation import basic_approximation_generator
 from solovay_kitaev.gates import cliffords
 
 class TestBasicApproximation(unittest.TestCase):
