@@ -1,25 +1,25 @@
 import numpy as np 
 from scipy.optimize import root_scalar
 from scipy.linalg import schur
-
-import numpy as np
-from scipy.optimize import root_scalar
-from numpy import array
-from scipy.linalg import schur
 from solovay_kitaev.gates.paulis import pauli_x, pauli_y, pauli_z
 
-
-def dag(matrix : array):
+def dag(matrix : np.ndarray):
     '''
-    dag
-    Performs a conjugate transpose on the matrix
+        dag
+        Performs a Hermitean conjugate (i.e. conjugate transpose) on the input matrix. Simply returns matrix.conj().T.
+        :: matrix : np.ndarray :: Input array; presumed to be a square matrix.
     '''
     return matrix.conj().T
 
 
 def unitary_phase(phi):
     '''
-        TODO Yuval
+        unitary_phase
+        Returns the solution to Eq. (10) from [DN05] Dawson and Nielsen (2005) -- arXiv:quant-ph/0505030.
+
+        The group commutator produced by solovay_kitaev.gc_decompose can be written as a rotation about some axis by an angle ('theta'). The purpose of this function is to calculate 'theta'. The value of 'theta' depends on the angle ('phi') of rotation about the X and Y axes used as intermediate values for the two unitary operators that, following a basis change, comprise the output of solovay_kitaev.gc_decompose.
+
+        :: phi :: Input angle (or numpy.ndarray of angles) that is assumed to be between 0 and pi/2.
     '''
     # [DN05, Eq. (10)]
     return 2 * np.arcsin(
@@ -30,7 +30,12 @@ def unitary_phase(phi):
 
 def invert_unitary_phase(theta):
     '''
-        TODO Yuval
+        invert_unitary_phase
+        Numerically inverts the function solovay_kitaev.unitary_phase. This is needed because we are *given* a unitary phase and we must *calculate* an input that yields that given unitary phase.
+
+        This function is implemented using scipy.root_scalar. The current implementation is quite hacky and so it is NOT VECTORISED.
+
+        :: theta :: Input angle presumed to be the rotation angle for the input unitary of solovay_kitaev.gc_decompose.
     '''
     # Inversion of the theta function
     # warning: this function is NOT VECTORISED
