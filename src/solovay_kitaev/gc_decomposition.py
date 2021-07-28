@@ -1,5 +1,4 @@
-import numpy as np
-from scipy.optimize import root_scalar
+import numpy as np from scipy.optimize import root_scalar
 from scipy.linalg import schur
 
 import numpy as np
@@ -28,14 +27,13 @@ def phi(theta_arg):
     return sol.root
 
 def GC_decompose(U):
-    assert np.linalg.det(U) == 1, "GC_decompose requires an input with determinant 1."
+    assert np.abs(np.linalg.det(U) - 1) < 10**(-6), "GC_decompose requires an input with determinant 1."
     vals, _ = np.linalg.eig(U)
     cos_theta_on_two = np.real(vals[0])
     phi_value = phi(2 * np.arccos(cos_theta_on_two))
     V = np.cos(phi_value / 2) * I - 1j * np.sin(phi_value / 2) * X
     W = np.cos(phi_value / 2) * I - 1j * np.sin(phi_value / 2) * Y
     gc = V @ W @ V.conj().T @ W.conj().T # group commutator
-    assert np.trace(U) == np.trace(gc), "Either serious user error or serious Yuval error."
     _, S_U = schur(U)
     _, S_gc = schur(gc)
     S = S_gc.conj().T @ S_U
