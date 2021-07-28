@@ -47,10 +47,13 @@ def invert_unitary_phase(theta):
 
 def gc_decompose(unitary, determinant_error=1e-6):
     '''
-        TODO Yuval
+        gc_decompose
+        Implementation of the group commutator decomposition method explained in Section 4.1 of [DN05] Dawson and Nielsen (2005) -- arXiv:quant-ph/0505030. Returns the pair of unitary operators defined in [DN05, Eq. (11)].
+        :: unitary           :: Unitary operator to be decomposed. Because of how this unitary operator is processed, the input MUST have determinant 1.
+        :: determinant_error :: Error tolerance used when checking that the determinant of the input unitary is 1.
     '''
 
-    #  GC_decompose requires an input with determinant 1.
+    #  gc_decompose requires an input with determinant 1.
     assert(np.abs(np.linalg.det(unitary) - 1) < determinant_error)
 
     eigen_values, _ = np.linalg.eig(unitary)
@@ -64,8 +67,8 @@ def gc_decompose(unitary, determinant_error=1e-6):
 
     _, schur_unitary = schur(unitary)
     _, schur_group_commutator = schur(group_commutator)
-    similary_transform = dag(schur_group_commutator) @ schur_unitary
+    similarity_transform = dag(schur_group_commutator) @ schur_unitary
 
-    left_transform = similary_transform @ left_transform @ dag(similary_transform)
-    right_transform =  similary_transform @ right_transform @ dag(similary_transform)
+    left_transform = similarity_transform @ left_transform @ dag(similarity_transform)
+    right_transform =  similarity_transform @ right_transform @ dag(similarity_transform)
     return left_transform, right_transform
