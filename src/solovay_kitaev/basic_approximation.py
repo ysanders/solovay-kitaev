@@ -1,19 +1,22 @@
 from numpy import array, eye
 from numpy.linalg import norm
 
-from solo
-
 class BaseCaseQuery():
+    '''
+        BaseCaseQuery class
+        Constructs a queryable object for the base case in Solovay-Kitaev
+    '''
 
     def __init__(self, *gates : list, depth=3, unique=True, norm_bound=1e-5):
         self.depth = depth
         self.gates = gates
+        self.norm_bound = norm_bound
 
         self.query_structure = None
         self.generate_query_structure(unique=unique)
 
-        self.vector_norm = self.construct_vector_norm()
         
+
     def generate_query_structure(self, unique=True):
         '''
             generate_query_structure
@@ -23,15 +26,15 @@ class BaseCaseQuery():
             leading to performance improvements at query time.
         '''
         query_structure = []
-        for approximation, construction in basic_approximation_generator(*self.gates, depth=depth):
+        for approximation, construction in basic_approximation_generator(*self.gates):
  
             # Check if close approximation already exists    
             approximated = False
-            if len(query_structure) > 0 or not self.unique: # If not unique then skip this check
+            if len(query_structure) > 0 or not unique: # If not unique then skip this check
 
                 for extant_approximation, extant_construction in enumerate(query_structure):
                     # Compare Frobenius norm
-                    if norm(approximation, extant_approximation, ord='fro') < self.norm_bound:
+                    if norm(approximation - extant_approximation) < self.norm_bound:
                         approximated = True
                         break
                     
@@ -39,31 +42,61 @@ class BaseCaseQuery():
             if not approximated:
                 query_structure.append((approximation, construction))
             
-        return query_structure
+        self.query_structure = query_structure
 
 
-    def __call__(self, unitary : array:) -> tuple:
+    def __call__(self, unitary : array) -> tuple:
         '''
             __call__
             Calls the query method
             :: unitary : array :: Unitary for which we want to find the base approximation
             Returns a tuple of the approximate gate along with the gates required to construct it.
         '''
-        self.query(unitary)
+        return self.query(unitary)
 
-    def query(self, unitary : array) -> tuple:
-    '''
-        query
-        Performs a query on the base case structure
-        :: unitary :: Unitary to find the approximation of
-        Returns a tuple of the approximate gate along with the gates required to construct it.
-    '''
-        pass
+
+    def query(self, unitary : array, memory_bound=False) -> tuple:
+        '''
+            query
+            Performs a query on the base case structure
+            :: unitary : array :: Unitary for which we want to find the base approximation
+            :: memory_bound    :: If the basis set is too large then it's inefficient to 
+            Returns a tuple of the approximate gate along with the gates required to construct it.
+        '''
+
+        distance = float('inf')
+        min_dist_approx = None
+        min_dist_construction = None
+
+        # TODO Vectorise
+        for approximation, construction in self.query_structure:
+            current_distance = norm(unitary - approximation, ord='fro')
+
+            if current_distance < distance:
+                distance = current_distance
+                min_dist_approx = approximation
+                min_dist_construction = construction
+
+        return min_dist_approx, min_dist_construction
 
     
-    def construct_vector_norm(self):
-        def vector_norm(matrix_a : array, matrix_b : array):
-            return np.norm(matrix_a, matrix_b, ord='fro')
+    def construct_vector_norm(self, unitary : array):
+        '''
+            construct_vector_norm
+            Constructs a vectorised query function
+            Requires refactoring of the query structure to a numpy array
+            :: unitary : array :: unitary to query
+            Returns a vectorised function
+        '''
+        def matrix_norm(matrix_a : array, matrix_b : array):
+            return norm(matrix_a, matrix_b, ord='fro')
+        partial_norm = partial(matrix_norm, unitary)
+        vector_norm = np.vectorize(partial_norm)
+        return vector_norm
+
+
+
+
 
 def basic_approximation_generator(
         *gates, 
@@ -112,5 +145,3 @@ def basic_approximation_generator(
             base_approximation = gate @ base_approximation
 
         yield base_approximation, current_combination
-
-
